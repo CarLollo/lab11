@@ -6,7 +6,9 @@ import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.LayoutManager;
 import java.awt.Toolkit;
+import java.util.Arrays;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -38,7 +40,24 @@ public final class LambdaFilter extends JFrame {
         /**
          * Commands.
          */
-        IDENTITY("No modifications", Function.identity());
+        IDENTITY("No modifications", Function.identity()),
+        TOLOWER("To lower", x -> x.toLowerCase()),
+        CHARSNUMBER("Number of chars", x -> Integer.toString(x.length())),
+        LINESNUMBER("Number of lines", x -> Long.toString(x.chars()
+            .filter(i -> i == '\n')
+            .count()+1)),
+            
+        WORDSINORDER("Words in alphabetical order", x -> Arrays.stream(x.split(" "))
+            .sorted((o1, o2) -> o1.compareTo(o2))
+            .collect(Collectors.joining(",\n"))),
+        
+        COUNTERWORD("Count for each word", x -> Arrays.stream(x.split(" "))
+            .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()))
+            .entrySet()
+            .stream()
+            .map(i -> i.getKey() + " -> " + i.getValue())
+            .sorted((o1, o2) -> o1.compareTo(o2))
+            .collect(Collectors.joining(",\n")));
 
         private final String commandName;
         private final Function<String, String> fun;
@@ -75,8 +94,10 @@ public final class LambdaFilter extends JFrame {
         centralPanel.add(left);
         centralPanel.add(right);
         panel1.add(centralPanel, BorderLayout.CENTER);
+
         final JButton apply = new JButton("Apply");
         apply.addActionListener(ev -> right.setText(((Command) combo.getSelectedItem()).translate(left.getText())));
+        
         panel1.add(apply, BorderLayout.SOUTH);
         setContentPane(panel1);
         final Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
