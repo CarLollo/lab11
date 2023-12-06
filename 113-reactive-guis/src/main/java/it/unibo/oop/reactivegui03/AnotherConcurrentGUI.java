@@ -23,8 +23,8 @@ public final class AnotherConcurrentGUI extends JFrame {
     private final JButton down = new JButton("down");
     private final JButton up = new JButton("up");
 
-    final Agent agent = new Agent();
-    final StoppingAgent stoppingAgent = new StoppingAgent();
+    private final Agent agent = new Agent();
+    private final StoppingAgent stoppingAgent = new StoppingAgent();
 
     public void stop() {
             agent.stopCounting();
