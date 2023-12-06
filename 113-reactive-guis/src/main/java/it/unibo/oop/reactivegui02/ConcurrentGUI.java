@@ -15,6 +15,7 @@ import javax.swing.SwingUtilities;
  */
 @SuppressWarnings("PMD.AvoidPrintStackTrace")
 public final class ConcurrentGUI extends JFrame {
+
     private static final long serialVersionUID = 1L;
     private static final double WIDTH_PERC = 0.2;
     private static final double HEIGHT_PERC = 0.1;
@@ -48,9 +49,9 @@ public final class ConcurrentGUI extends JFrame {
         /*
          * Register a listener that stops it
          */
-        down.addActionListener((e) -> agent.Up());
+        down.addActionListener((e) -> agent.Down());
 
-        up.addActionListener((e) -> agent.Down());
+        up.addActionListener((e) -> agent.Up());
 
         stop.addActionListener((e) -> {agent.stopCounting(); stop.setEnabled(false); 
             up.setEnabled(false); down.setEnabled(false);});
@@ -83,7 +84,11 @@ public final class ConcurrentGUI extends JFrame {
                     // The EDT doesn't access `counter` anymore, it doesn't need to be volatile 
                     final var nextText = Integer.toString(this.counter);
                     SwingUtilities.invokeAndWait(() -> ConcurrentGUI.this.display.setText(nextText));
-                    this.counter++;
+                    if (countUp) {
+                        this.counter++;
+                    } else {
+                        this.counter--;
+                    }
                     Thread.sleep(100);
                 } catch (InvocationTargetException | InterruptedException ex) {
                     /*
