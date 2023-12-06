@@ -53,9 +53,12 @@ public final class ConcurrentGUI extends JFrame {
 
         up.addActionListener((e) -> agent.Up());
 
-        stop.addActionListener((e) -> {agent.stopCounting(); stop.setEnabled(false); 
-            up.setEnabled(false); down.setEnabled(false);});
-
+        stop.addActionListener((e) -> {
+            agent.stopCounting();
+            stop.setEnabled(false); 
+            up.setEnabled(false); 
+            down.setEnabled(false);
+        });
     }
 
     /*
@@ -85,9 +88,9 @@ public final class ConcurrentGUI extends JFrame {
                     final var nextText = Integer.toString(this.counter);
                     SwingUtilities.invokeAndWait(() -> ConcurrentGUI.this.display.setText(nextText));
                     if (countUp) {
-                        this.counter++;
+                        this.counter = this.counter + 1;
                     } else {
-                        this.counter--;
+                        this.counter = this.counter - 1;
                     }
                     Thread.sleep(100);
                 } catch (InvocationTargetException | InterruptedException ex) {
